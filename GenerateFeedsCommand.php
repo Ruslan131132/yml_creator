@@ -41,15 +41,20 @@ class GenerateFeedsCommand extends ContainerAwareCommand
     {
         $output->writeln('Генерация запущена');
 
-        $city = $this->cityRepo->find(74);
+        $cities = $this->cityRepo->findAll();
 
-        $progressBar = new ProgressBar($output, 1200000);
+        foreach ($cities as $city)
+        {
+            $output->writeln(PHP_EOL . 'Генерация для города ' . $city->getName() . ':' . PHP_EOL);
 
-        $this->generateFeed($city, $progressBar);
+            $progressBar = new ProgressBar($output, 1200000);
 
-        $progressBar->finish();
+            $this->generateFeed($city, $progressBar);
 
-        $output->writeln('Фиды успешно сгенерированы!');
+            $progressBar->finish();
+        }
+
+        $output->writeln(PHP_EOL . 'Фиды успешно сгенерированы!');
     }
 
     public function generateFeed(City $city, ProgressBar $progressBar)
